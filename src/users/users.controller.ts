@@ -8,24 +8,16 @@ import {
   Delete,
   Patch,
   ParseIntPipe,
-  UseInterceptors,
 } from '@nestjs/common';
-import { CreateUserDto } from './dtos/create-user.dto';
 import { UsersService } from './users.service';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { Serialize } from 'src/interceptors/serialize.interceptor';
 import { UserDto } from './dtos/user.dto';
 
-@Controller('auth')
+@Controller('users')
 @Serialize(UserDto)
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
-
-  // ===== SIGN UP =====
-  @Post('/signup')
-  createUser(@Body() body: CreateUserDto) {
-    return this.usersService.create(body.email, body.password);
-  }
 
   // ===== GET BY ID =====
 
@@ -37,7 +29,7 @@ export class UsersController {
   // ===== GET BY EMAIL =====
   @Get()
   findUserByEmail(@Query('email') email: string) {
-    return this.usersService.findByEmailOrFail(email);
+    return this.usersService.findByEmail(email);
   }
 
   // ===== UPDATE =====

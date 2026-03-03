@@ -36,6 +36,9 @@ export class AuthService {
       throw new BadRequestException('Invalid credentials');
     }
 
+    //console.log('Thong tin user: ', user);
     return user;
+    //const { password, ...result } = user;
+    //return result;
   }
 }

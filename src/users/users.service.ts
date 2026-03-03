@@ -33,7 +33,16 @@ export class UsersService {
   async findByEmail(email: string) {
     return this.repo.findOne({
       where: { email },
+      select: ['id', 'email', 'password'], // dùng cho login lấy password
     });
+  }
+
+  async findAllEmails(): Promise<string[]> {
+    const users = await this.repo.find({
+      select: ['email'],
+    });
+
+    return users.map((user) => user.email);
   }
 
   // ================= UPDATE =================
