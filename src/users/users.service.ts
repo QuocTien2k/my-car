@@ -18,7 +18,7 @@ export class UsersService {
   }
 
   // ================= FIND =================
-  async findOneOrFail(id: number) {
+  async findOneById(id: number) {
     const user = await this.repo.findOne({
       where: { id },
     });
@@ -47,7 +47,10 @@ export class UsersService {
 
   // ================= UPDATE =================
   async update(id: number, attributes: Partial<User>) {
-    const user = await this.findOneOrFail(id);
+    const user = await this.findOneById(id);
+
+    if (!user) {
+    }
 
     // check email duplicate
     if (attributes.email) {
@@ -69,11 +72,11 @@ export class UsersService {
 
     await this.repo.save(user);
 
-    return this.findOneOrFail(id);
+    return this.findOneById(id);
   }
 
   async remove(id: number) {
-    const user = await this.findOneOrFail(id);
+    const user = await this.findOneById(id);
 
     return this.repo.remove(user);
   }

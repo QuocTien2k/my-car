@@ -23,7 +23,7 @@ export class UsersController {
 
   @Get('/:id')
   findUserById(@Param('id', ParseIntPipe) id: number) {
-    return this.usersService.findOneOrFail(id);
+    return this.usersService.findOneById(id);
   }
 
   // ===== GET BY EMAIL =====

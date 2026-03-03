@@ -1,6 +1,7 @@
 import { NestFactory, Reflector } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
+import cookieSession from 'cookie-session';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -21,6 +22,12 @@ async function bootstrap() {
   // Global serialization layer using class-transformer
   // Automatically removes fields marked with @Exclude (e.g. password)
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
+
+  app.use(
+    cookieSession({
+      keys: ['random_key'],
+    }),
+  );
 
   await app.listen(port);
   console.log(`🚀 Server running at http://localhost:${port}`);
