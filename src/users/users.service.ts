@@ -13,20 +13,8 @@ export class UsersService {
   constructor(@InjectRepository(User) private repo: Repository<User>) {}
 
   async create(email: string, password: string) {
-    const checkEmailExists = await this.repo.findOne({ where: { email } });
-
-    if (checkEmailExists) {
-      throw new BadRequestException('Email already exists');
-    }
-
-    // hash password
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    const user = this.repo.create({ email, password: hashedPassword });
-
-    const savedUser = await this.repo.save(user);
-
-    return this.findOneOrFail(savedUser.id);
+    const user = this.repo.create({ email, password });
+    return this.repo.save(user);
   }
 
   // ================= FIND =================
@@ -42,16 +30,10 @@ export class UsersService {
     return user;
   }
 
-  async findByEmailOrFail(email: string) {
-    const user = await this.repo.findOne({
+  async findByEmail(email: string) {
+    return this.repo.findOne({
       where: { email },
     });
-
-    if (!user) {
-      throw new NotFoundException('User not found');
-    }
-
-    return user;
   }
 
   // ================= UPDATE =================
