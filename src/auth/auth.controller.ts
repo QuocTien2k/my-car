@@ -5,7 +5,6 @@ import {
   Post,
   Session,
   UnauthorizedException,
-  UseInterceptors,
 } from '@nestjs/common';
 import { CreateUserDto } from 'src/users/dtos/create-user.dto';
 import { AuthService } from './auth.service';
@@ -13,11 +12,9 @@ import { Serialize } from 'src/interceptors/serialize.interceptor';
 import { UserDto } from 'src/users/dtos/user.dto';
 import { UsersService } from 'src/users/users.service';
 import { User } from 'src/users/users.entity';
-import { CurrentUserInterceptor } from './interceptors/current-user.interceptor';
 import { CurrentUser } from './decorators/current-user.decorator';
 
 @Controller('auth')
-@UseInterceptors(CurrentUserInterceptor)
 export class AuthController {
   constructor(
     private readonly authService: AuthService,
