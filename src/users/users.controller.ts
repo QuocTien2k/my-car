@@ -8,11 +8,13 @@ import {
   Delete,
   Patch,
   ParseIntPipe,
+  UseGuards,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { Serialize } from 'src/interceptors/serialize.interceptor';
 import { UserDto } from './dtos/user.dto';
+import { AuthGuard } from 'src/guards/auth.guard';
 
 @Controller('users')
 @Serialize(UserDto)
@@ -33,6 +35,7 @@ export class UsersController {
   }
 
   // ===== UPDATE =====
+  @UseGuards(AuthGuard)
   @Patch('/:id')
   updateUser(
     @Param('id', ParseIntPipe) id: number,

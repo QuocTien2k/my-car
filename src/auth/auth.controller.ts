@@ -5,6 +5,7 @@ import {
   Post,
   Session,
   UnauthorizedException,
+  UseGuards,
 } from '@nestjs/common';
 import { CreateUserDto } from 'src/users/dtos/create-user.dto';
 import { AuthService } from './auth.service';
@@ -13,6 +14,7 @@ import { UserDto } from 'src/users/dtos/user.dto';
 import { UsersService } from 'src/users/users.service';
 import { User } from 'src/users/users.entity';
 import { CurrentUser } from './decorators/current-user.decorator';
+import { AuthGuard } from 'src/guards/auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -49,12 +51,14 @@ export class AuthController {
   //   return this.usersService.findOneById(session.userId);
   // }
 
+  @UseGuards(AuthGuard)
   @Get('/whoami')
   whoAmI(@CurrentUser() user: User) {
-    console.log('thong tin: ', user);
+    //console.log('thong tin: ', user);
     return user;
   }
 
+  @UseGuards(AuthGuard)
   @Post('/logout')
   logout(@Session() session: any) {
     session.userId = null;
