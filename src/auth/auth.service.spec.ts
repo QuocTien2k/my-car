@@ -2,7 +2,7 @@ import { Test } from '@nestjs/testing';
 import { AuthService } from './auth.service';
 import { UsersService } from 'src/users/users.service';
 import { User } from 'src/users/users.entity';
-import { BadRequestException } from '@nestjs/common';
+import { BadRequestException, NotFoundException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 
 describe('AuthService', () => {
@@ -58,6 +58,12 @@ describe('AuthService', () => {
     };
 
     await expect(service.signup('test@test.com', '123456')).rejects.toThrow(
+      BadRequestException,
+    );
+  });
+
+  it('throws if login is called with an unused email', async () => {
+    await expect(service.login('notfound@test.com', '123456')).rejects.toThrow(
       BadRequestException,
     );
   });
