@@ -10,11 +10,24 @@ describe('AuthService', () => {
   let fakeUsersService: Partial<UsersService>;
 
   beforeEach(async () => {
-    //fake user service
+    const users: User[] = [];
+
     fakeUsersService = {
-      findByEmail: () => Promise.resolve(null),
-      create: (email: string, password: string) =>
-        Promise.resolve({ id: 1, email, password } as User),
+      findByEmail: (email: string) => {
+        const user = users.find((user) => user.email === email);
+        return Promise.resolve(user || null);
+      },
+
+      create: (email: string, password: string) => {
+        const user = {
+          id: Math.floor(Math.random() * 999999),
+          email,
+          password,
+        } as User;
+
+        users.push(user);
+        return Promise.resolve(user);
+      },
     };
 
     const module = await Test.createTestingModule({
@@ -74,17 +87,19 @@ describe('AuthService', () => {
 
   //giả lập mật khẩu ko hợp lệ
   it('throws if an invalid password is provided', async () => {
-    const hashedPassword = await bcrypt.hash('correctpassword', 10);
-
-    fakeUsersService.findByEmail = (email: string) =>
-      Promise.resolve({
-        id: 1,
-        email,
-        password: hashedPassword,
-      } as User);
+    await service.signup('test@test.com', 'correctpassword');
 
     await expect(
       service.login('test@test.com', 'wrongpassword'),
     ).rejects.toThrow(BadRequestException);
+  });
+
+  //giả lập mật khẩu hợp lệ
+  it('returns a user if correct password is provided', async () => {
+    await service.signup('test@test.com', 'mypassword');
+
+    const user = await service.login('test@test.com', 'mypassword');
+
+    expect(user).toBeDefined();
   });
 });
