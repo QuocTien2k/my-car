@@ -30,10 +30,12 @@ describe('AuthService', () => {
     service = module.get(AuthService);
   });
 
+  //giả lập khởi tạo auth
   it('can create an instance of auth service', async () => {
     expect(service).toBeDefined();
   });
 
+  //giả lập mật khẩu đã hash
   it('hashes the password when creating a new user', async () => {
     const user = await service.signup('nguyenvand@gmail.com', '123456');
 
@@ -43,6 +45,7 @@ describe('AuthService', () => {
     expect(isMatch).toBe(true);
   });
 
+  //giả lập email đã sử dụng
   it('throws an error if user signs up with email that is in use', async () => {
     //existing user
     fakeUsersService.findByEmail = (email: string) => {
@@ -62,9 +65,26 @@ describe('AuthService', () => {
     );
   });
 
+  //giả lập email ko hợp lệ
   it('throws if login is called with an unused email', async () => {
     await expect(service.login('notfound@test.com', '123456')).rejects.toThrow(
       BadRequestException,
     );
+  });
+
+  //giả lập mật khẩu ko hợp lệ
+  it('throws if an invalid password is provided', async () => {
+    const hashedPassword = await bcrypt.hash('correctpassword', 10);
+
+    fakeUsersService.findByEmail = (email: string) =>
+      Promise.resolve({
+        id: 1,
+        email,
+        password: hashedPassword,
+      } as User);
+
+    await expect(
+      service.login('test@test.com', 'wrongpassword'),
+    ).rejects.toThrow(BadRequestException);
   });
 });
