@@ -22,7 +22,6 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   // ===== GET BY ID =====
-
   @Get('/:id')
   findUserById(@Param('id', ParseIntPipe) id: number) {
     return this.usersService.findOneById(id);

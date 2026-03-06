@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
 import { User } from './users.entity';
+import { NotFoundException } from '@nestjs/common';
 
 describe('UsersController', () => {
   let controller: UsersController;
@@ -9,18 +10,20 @@ describe('UsersController', () => {
 
   beforeEach(async () => {
     fakeUsersService = {
-      findOneById: (id: number) => {
-        return Promise.resolve({
-          id,
-          email: 'test@test.com',
-        } as User);
+      findOneById: async (id: number) => {
+        if (id === 1) {
+          return { id, email: 'test@test.com' } as User;
+        }
+
+        throw new NotFoundException('User not found');
       },
 
-      findByEmail: (email: string) => {
-        return Promise.resolve({
-          id: 1,
-          email,
-        } as User);
+      findByEmail: async (email: string) => {
+        if (email === 'test@test.com') {
+          return { id: 1, email } as User;
+        }
+
+        return null;
       },
 
       findAllEmails: () => {
@@ -70,11 +73,23 @@ describe('UsersController', () => {
     });
   });
 
+  it('findUserById throws NotFoundException if user does not exist', async () => {
+    await expect(controller.findUserById(10)).rejects.toThrow(
+      NotFoundException,
+    );
+  });
+
   // ===== FIND BY EMAIL =====
   it('findUserByEmail returns a user', async () => {
     const user = await controller.findUserByEmail('test@test.com');
 
     expect(user.email).toEqual('test@test.com');
+  });
+
+  it('findUserByEmail returns null if email not found', async () => {
+    const user = await controller.findUserByEmail('unknown@test.com');
+
+    expect(user).toBeNull();
   });
 
   // ===== UPDATE USER =====
