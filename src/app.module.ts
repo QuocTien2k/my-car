@@ -26,6 +26,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
           database: config.get<string>('DB_NAME'),
           synchronize: true,
           entities: [User, Report],
+          dropSchema: config.get('NODE_ENV') === 'test',
         };
       },
     }),
