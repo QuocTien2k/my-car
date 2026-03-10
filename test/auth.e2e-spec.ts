@@ -111,6 +111,42 @@ describe('Auth (e2e)', () => {
       .expect(400);
   });
 
+  it('whoami returns the currently logged in user', async () => {
+    const email = 'whoami@test.com';
+    const password = '123456';
+
+    // signup
+    await request(app.getHttpServer()).post('/auth/signup').send({
+      email,
+      password,
+    });
+
+    // login
+    const loginRes = await request(app.getHttpServer())
+      .post('/auth/login')
+      .send({
+        email,
+        password,
+      })
+      .expect(201);
+
+    // lấy cookie session
+    const cookie = loginRes.get('Set-Cookie');
+
+    // gọi whoami với cookie
+    const res = await request(app.getHttpServer())
+      .get('/auth/whoami')
+      .set('Cookie', cookie)
+      .expect(200);
+
+    expect(res.body.email).toEqual(email);
+    expect(res.body).toHaveProperty('id');
+  });
+
+  it('whoami fails if user is not logged in', async () => {
+    await request(app.getHttpServer()).get('/auth/whoami').expect(401);
+  });
+
   afterAll(async () => {
     await app.close();
   });
