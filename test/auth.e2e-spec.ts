@@ -13,18 +13,21 @@ describe('Auth (e2e)', () => {
   let app: INestApplication;
 
   beforeAll(async () => {
+    // const moduleFixture: TestingModule = await Test.createTestingModule({
+    //   imports: [
+    //     TypeOrmModule.forRoot({
+    //       type: 'sqlite',
+    //       database: ':memory:',
+    //       entities: [User, Report],
+    //       synchronize: true,
+    //       dropSchema: true,
+    //     }),
+    //     AuthModule,
+    //     UsersModule,
+    //   ],
+    // }).compile();
     const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [
-        TypeOrmModule.forRoot({
-          type: 'sqlite',
-          database: ':memory:',
-          entities: [User, Report],
-          synchronize: true,
-          dropSchema: true,
-        }),
-        AuthModule,
-        UsersModule,
-      ],
+      imports: [AppModule],
     }).compile();
 
     app = moduleFixture.createNestApplication();
