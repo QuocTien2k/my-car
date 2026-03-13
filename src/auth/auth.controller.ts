@@ -39,6 +39,9 @@ export class AuthController {
     const user = await this.authService.login(body.email, body.password);
 
     session.userId = user.id;
+    session.role = user.role;
+
+    //console.log('SESSION AFTER LOGIN:', session);
 
     return user;
   }

@@ -24,7 +24,7 @@ export class UsersService {
     });
 
     if (!user) {
-      throw new NotFoundException('User not found');
+      throw new NotFoundException('User not found hehe');
     }
 
     return user;
@@ -33,7 +33,7 @@ export class UsersService {
   async findByEmail(email: string) {
     return this.repo.findOne({
       where: { email },
-      select: ['id', 'email', 'password'], // dùng cho login lấy password
+      select: ['id', 'email', 'password', 'role'], // dùng cho login lấy password
     });
   }
 
