@@ -27,6 +27,9 @@ export class Report {
   @Column()
   mileage: number; // Số km xe đã chạy
 
+  @Column({ default: false })
+  approved: boolean; //duyệt bài
+
   @ManyToOne(() => User, (user) => user.reports)
   user: User;
 }
