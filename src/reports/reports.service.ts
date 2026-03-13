@@ -11,10 +11,15 @@ export class ReportsService {
     @InjectRepository(Report) private readonly repo: Repository<Report>,
   ) {}
 
-  create(reportDto: CreateReportDto, user: User) {
+  async create(reportDto: CreateReportDto, user: User) {
     const report = this.repo.create(reportDto);
     report.user = user;
 
-    return this.repo.save(report);
+    const savedReport = await this.repo.save(report);
+
+    // console.log('savedReport:', savedReport);
+    // console.log('savedReport.user:', savedReport.user);
+
+    return savedReport;
   }
 }
