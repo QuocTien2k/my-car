@@ -1,10 +1,12 @@
 import {
   Body,
   Controller,
+  Get,
   Param,
   ParseIntPipe,
   Patch,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { CreateReportDto } from './dtos/create-report.dto';
@@ -18,11 +20,17 @@ import { ApproveReportDto } from './dtos/approve-report.dto';
 import { RolesGuard } from 'src/guards/roles.guard';
 import { Roles } from 'src/decorator/roles.decorator';
 import { UserRole } from 'src/enum/user-role.enum';
+import { GetEstimateDto } from './dtos/get-estimate.dto';
 
 @Controller('reports')
 @Serialize(ReportDto)
 export class ReportsController {
   constructor(private readonly reportsService: ReportsService) {}
+
+  @Get()
+  getEstimate(@Query() query: GetEstimateDto) {
+    return this.reportsService.estimatePrice(query);
+  }
 
   @UseGuards(AuthGuard)
   @Post()
