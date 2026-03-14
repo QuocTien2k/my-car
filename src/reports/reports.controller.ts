@@ -27,6 +27,7 @@ import { GetEstimateDto } from './dtos/get-estimate.dto';
 export class ReportsController {
   constructor(private readonly reportsService: ReportsService) {}
 
+  @UseGuards(AuthGuard)
   @Get()
   getEstimate(@Query() query: GetEstimateDto) {
     return this.reportsService.estimatePrice(query);
