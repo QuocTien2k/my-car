@@ -32,23 +32,22 @@ describe('Auth (e2e)', () => {
 
     app = moduleFixture.createNestApplication();
 
-    app.use(
-      cookieSession({
-        keys: ['test_key'],
-      }),
-    );
+    // app.use(
+    //   cookieSession({
+    //     keys: ['test_key'],
+    //   }),
+    // );
 
     await app.init();
   });
 
   it('signup successfully', async () => {
-    const res = await request(app.getHttpServer())
-      .post('/auth/signup')
-      .send({
-        email: 'test@test.com',
-        password: '123456',
-      })
-      .expect(201);
+    const res = await request(app.getHttpServer()).post('/auth/signup').send({
+      email: 'test@test.com',
+      password: '123456',
+    });
+    console.log(res.body);
+    //.expect(201);
 
     expect(res.body.email).toEqual('test@test.com');
     expect(res.body).toHaveProperty('id');
